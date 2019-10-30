@@ -1,0 +1,821 @@
+//50
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<algorithm>
+using namespace std;
+int n,m;
+int g[1000010],tot;
+int gg[1000010],tott;
+struct lu
+{
+    int to;
+    int next;
+    int w;
+    int id;
+}e[1000010],ee[1000010];
+void add1(int a,int b,int c)
+{
+    tot++;
+    e[tot].to=b;
+    e[tot].next=g[a];
+    e[tot].w=c;
+    g[a]=tot;
+}
+void add2(int a,int b,int c)
+{
+    tott++;
+    ee[tott].to=b;
+    ee[tott].next=gg[a];
+    ee[tott].id=c;
+    gg[a]=tott;
+}
+int aa[1000010],bb[1000010];
+int v[1000010],vis[1000010];
+int pre[1000010];
+int find1(int x)
+{
+    if(pre[x]==x)return x;
+    else return pre[x]=find1(pre[x]);
+}
+int lcaa[1000010];
+void lca(int a)
+{
+    v[a]=1;
+    int tmp=g[a];
+    while(tmp!=0)
+    {
+        if(v[e[tmp].to]==0)
+        {
+            lca(e[tmp].to);
+            pre[e[tmp].to]=a;
+        }
+        tmp=e[tmp].next;
+    }
+    vis[a]=1;
+    int temp=gg[a];
+    while(temp!=0)
+    {
+        if(vis[ee[temp].to]==1)
+        {
+            lcaa[ee[temp].id]=find1(ee[temp].to);
+        }
+        temp=ee[temp].next;
+    }
+}
+int ans=99999999;
+int dis[1000010],p[1000010];
+bool f[1000010];
+void spfa()
+{
+    memset(dis,0x3f,sizeof(dis));
+    memset(f,false,sizeof(f));
+    dis[1]=0;
+    int h=0,t=1;
+    p[t]=1;
+    f[1]=true;
+    while(h!=t)
+    {
+        h=h%n+1;
+        int u=p[h];
+        int tmp=g[u];
+        while(tmp!=0)
+        {
+            if(dis[e[tmp].to]>dis[u]+e[tmp].w)
+            {
+                dis[e[tmp].to]=dis[u]+e[tmp].w;
+                if(!f[e[tmp].to])
+                {
+                    t=t%n+1;
+                    p[t]=e[tmp].to;
+                    f[e[tmp].to]=true;
+                }
+            }
+            tmp=e[tmp].next;
+        }
+        f[u]=false;
+    }
+}
+int main()
+{
+    scanf("%d %d",&n,&m);
+    for(int i=1;i<=n;i++)pre[i]=i;
+    for(int i=1;i<=n-1;i++)
+    {
+        int x,y,z;
+        scanf("%d %d %d",&x,&y,&z);
+        add1(x,y,z);
+        add1(y,x,z);
+    }
+    for(int i=1;i<=m;i++)
+    {
+        scanf("%d %d",&aa[i],&bb[i]);
+        add2(aa[i],bb[i],i);
+        add2(bb[i],aa[i],i);
+    }
+    
+    lca(1);
+    for(int i=1;i<=n-1;i++)
+    {
+        int lo=e[i*2].w;
+        e[i*2].w=0;
+        e[i*2-1].w=0;
+        spfa();
+        e[i*2].w=lo;
+        e[i*2-1].w=lo;
+        
+        int maxnn=-1;
+        for(int j=1;j<=m;j++)
+        {
+            maxnn=max(maxnn,dis[aa[j]]+dis[bb[j]]-2*dis[lcaa[j]]);
+        }
+        ans=min(ans,maxnn);
+    }
+    printf("%d",ans);
+    return 0;
+}
+
+
+
+
+//65
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<algorithm>
+using namespace std;
+int n,m;
+int g[1000010],tot;
+int gg[1000010],tott;
+struct lu
+{
+    int to;
+    int next;
+    int w;
+    int id;
+}e[1000010],ee[1000010];
+struct ffa
+{
+    int dian;
+    int bian;
+}fa[1000010];
+void add1(int a,int b,int c)
+{
+    tot++;
+    e[tot].to=b;
+    e[tot].next=g[a];
+    e[tot].w=c;
+    g[a]=tot;
+}
+void add2(int a,int b,int c)
+{
+    tott++;
+    ee[tott].to=b;
+    ee[tott].next=gg[a];
+    ee[tott].id=c;
+    gg[a]=tott;
+}
+int aa[1000010],bb[1000010];
+int v[1000010],vis[1000010];
+int pre[1000010];
+int find1(int x)
+{
+    if(pre[x]==x)return x;
+    else return pre[x]=find1(pre[x]);
+}
+int lcaa[1000010];
+void lca(int a)
+{
+    v[a]=1;
+    int tmp=g[a];
+    while(tmp!=0)
+    {
+        if(v[e[tmp].to]==0)
+        {
+            lca(e[tmp].to);
+            pre[e[tmp].to]=a;
+        }
+        tmp=e[tmp].next;
+    }
+    vis[a]=1;
+    int temp=gg[a];
+    while(temp!=0)
+    {
+        if(vis[ee[temp].to]==1)
+        {
+            lcaa[ee[temp].id]=find1(ee[temp].to);
+        }
+        temp=ee[temp].next;
+    }
+}
+int ans=99999999;
+int dis[1000010],p[1000010];
+bool f[1000010];
+void spfa()
+{
+    memset(dis,0x3f,sizeof(dis));
+    memset(f,false,sizeof(f));
+    dis[1]=0;
+    int h=0,t=1;
+    p[t]=1;
+    f[1]=true;
+    while(h!=t)
+    {
+        h=h%n+1;
+        int u=p[h];
+        int tmp=g[u];
+        while(tmp!=0)
+        {
+            if(dis[e[tmp].to]>dis[u]+e[tmp].w)
+            {
+                dis[e[tmp].to]=dis[u]+e[tmp].w;
+                if(!f[e[tmp].to])
+                {
+                    t=t%n+1;
+                    p[t]=e[tmp].to;
+                    f[e[tmp].to]=true;
+                }
+            }
+            tmp=e[tmp].next;
+        }
+        f[u]=false;
+    }
+}
+void spfa1(int s)
+{
+    memset(dis,0x3f,sizeof(dis));
+    memset(f,false,sizeof(f));
+    fa[s].dian=0;
+    fa[s].bian=0;
+    dis[s]=0;
+    int h=0,t=1;
+    p[t]=s;
+    f[s]=true;
+    while(h!=t)
+    {
+        h=h%n+1;
+        int u=p[h];
+        int tmp=g[u];
+        while(tmp!=0)
+        {
+            if(dis[e[tmp].to]>dis[u]+e[tmp].w)
+            {
+                dis[e[tmp].to]=dis[u]+e[tmp].w;
+                fa[e[tmp].to].dian=u;
+                fa[e[tmp].to].bian=tmp;
+                if(!f[e[tmp].to])
+                {
+                    t=t%n+1;
+                    p[t]=e[tmp].to;
+                    f[e[tmp].to]=true;
+                }
+            }
+            tmp=e[tmp].next;
+        }
+        f[u]=false;
+    }
+}
+int mm;
+int maxnn=-1;
+int main()
+{
+    scanf("%d %d",&n,&m);
+    for(int i=1;i<=n;i++)pre[i]=i;
+    for(int i=1;i<=n-1;i++)
+    {
+        int x,y,z;
+        scanf("%d %d %d",&x,&y,&z);
+        add1(x,y,z);
+        add1(y,x,z);
+    }
+    
+    for(int i=1;i<=m;i++)
+    {
+        scanf("%d %d",&aa[i],&bb[i]);
+        add2(aa[i],bb[i],i);
+        add2(bb[i],aa[i],i);
+    }
+    lca(1);
+    
+    spfa();
+    for(int i=1;i<=m;i++)
+    {
+        int t=dis[aa[i]]+dis[bb[i]]-2*dis[lcaa[i]];
+        if(t>maxnn)
+        {
+            maxnn=t;
+            mm=i;
+        }
+    }
+    
+    spfa1(aa[mm]);
+    for(int tmp=bb[mm];tmp;tmp=fa[tmp].dian)
+    {
+        int temp=fa[tmp].bian;
+        
+        int lo=e[temp].w;
+        e[temp].w=0;
+        if(temp%2==0)e[temp-1].w=0;
+        else e[temp+1].w=0;
+        
+        spfa();
+        
+        e[temp].w=lo;
+        if(temp%2==0)e[temp-1].w=lo;
+        else e[temp+1].w=lo;
+        
+        maxnn=-1;
+        for(int j=1;j<=m;j++)
+        {
+            maxnn=max(maxnn,dis[aa[j]]+dis[bb[j]]-2*dis[lcaa[j]]);
+        }
+        ans=min(ans,maxnn);
+        
+    }
+    printf("%d",ans);
+    return 0;
+}
+
+
+
+
+
+//75 不加lca，纯暴力
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<algorithm>
+using namespace std;
+int max(int a,int b)
+{
+    if(a>b)return a;
+    else return b;
+}
+int min(int a,int b)
+{
+    if(a<b)return a;
+    else return b;
+}
+
+int n,m;
+int g[1000010],tot;
+struct shu
+{
+    int to;
+    int next;
+    int w;
+}e[1000010];
+void addedge(int a,int b,int c)
+{
+    tot++;
+    e[tot].to=b;
+    e[tot].w=c;
+    e[tot].next=g[a];
+    g[a]=tot;
+}
+int dis[1000010],p[1000010];
+bool f[1000010];
+struct fss
+{
+    int dian;
+    int bian;
+    int w;
+}ff[1000100],fa[1000010];
+void spfa(int s)
+{
+    memset(dis,0x3f,sizeof(dis));
+    memset(f,false,sizeof(f));
+    ff[s].dian=0;
+    ff[s].bian=0;
+    dis[s]=0;
+    int h=0,t=1;
+    p[t]=s;
+    f[s]=true;
+    while(h!=t)
+    {
+        h=h%n+1;
+        int u=p[h];
+        int tmp=g[u];
+        while(tmp!=0)
+        {
+            if(dis[e[tmp].to]>dis[u]+e[tmp].w)
+            {
+                dis[e[tmp].to]=dis[u]+e[tmp].w;
+                ff[e[tmp].to].dian=u;
+                ff[e[tmp].to].bian=tmp;
+                if(!f[e[tmp].to])
+                {
+                    t=t%n+1;
+                    p[t]=e[tmp].to;
+                    f[e[tmp].to]=true;
+                }
+            }
+            tmp=e[tmp].next;
+        }
+        f[u]=false;
+    }
+}
+
+void spfa1(int s,int ss)
+{
+    memset(dis,0x3f,sizeof(dis));
+    memset(f,false,sizeof(f));
+    fa[s].dian=0;
+    fa[s].bian=0;
+    dis[s]=0;
+    int h=0,t=1;
+    p[t]=s;
+    f[s]=true;
+    while(h!=t)
+    {
+        h=h%n+1;
+        int u=p[h];
+        int tmp=g[u];
+        while(tmp!=0)
+        {
+            if(dis[e[tmp].to]>dis[u]+e[tmp].w)
+            {
+                dis[e[tmp].to]=dis[u]+e[tmp].w;
+                fa[e[tmp].to].dian=u;
+                fa[e[tmp].to].bian=tmp;
+                if(!f[e[tmp].to])
+                {
+                    t=t%n+1;
+                    p[t]=e[tmp].to;
+                    f[e[tmp].to]=true;
+                }
+            }
+            tmp=e[tmp].next;
+        }
+        f[u]=false;
+    }
+}
+
+
+int aa[1000010],bb[1000010];
+int ans=99999999;
+int is_,you=-1,zuo=99999999;
+int mmaa[1000010];
+int xx,maxn=-1;
+int llo[1000010];
+bool fv[10010][10010];
+int main()
+{
+    scanf("%d %d",&n,&m);
+    for(int i=1;i<=n-1;i++)
+    {
+        int x,y,z;
+        scanf("%d %d %d",&x,&y,&z);
+        if((x==i&&y==i+1)||(y==i&&x==i+1))is_++;  //判断是不是链 
+        mmaa[i+1]=mmaa[i]+z;  //前缀和 
+        addedge(x,y,z);
+        addedge(y,x,z);
+    }
+    
+    if(m==1)    //m==1时 
+    {
+        int x,y;
+        scanf("%d %d",&x,&y);
+        spfa(x);
+        int maxnn=-1;
+        for(int tmp=y;tmp!=0;tmp=ff[tmp].dian)
+        {
+            int temp=ff[tmp].bian;
+            maxnn=max(maxnn,e[temp].w);
+        }
+        printf("%d",dis[y]-maxnn);
+        return 0;
+    }
+    
+    
+    
+    if(is_==n-1)    //一条链时 
+    {
+        int mmax=-1;
+    	for(int i=1;i<=m;i++)
+        {
+        	scanf("%d %d",&aa[i],&bb[i]);
+        	int ssum=mmaa[bb[i]]-mmaa[aa[i]];
+        	if(mmax<ssum)
+        	{
+        		mmax=ssum;
+        		zuo=aa[i];
+        		you=bb[i];
+        	}
+        }
+        for(int i=zuo;i<you;i++)
+        {
+            int ssum=e[i*2].w;
+            int maxnn=-1;
+            for(int j=1;j<=m;j++)
+            {
+                if(aa[j]<=i&&bb[j]>i)
+                {
+                    maxnn=max(maxnn,mmaa[bb[j]]-mmaa[aa[j]]-ssum);
+                }
+                else maxnn=max(maxnn,mmaa[bb[j]]-mmaa[aa[j]]);
+            }
+            ans=min(ans,maxnn);
+        }
+        printf("%d",ans);
+        return 0;
+    }
+
+
+    for(int i=1;i<=m;i++)
+    {
+        scanf("%d %d",&aa[i],&bb[i]);
+        spfa1(aa[i],i);
+        llo[i]=dis[bb[i]];    //记录下来 
+        for(int tmp=bb[i];tmp;tmp=fa[tmp].dian)
+        {
+            int temp=fa[tmp].bian;
+            fv[i][temp]=true;      //给遍历过的打标记，之后更改的时候避免跑spfa 
+        }
+        if(dis[bb[i]]>maxn)    //找最长的一段 
+        {
+            maxn=dis[bb[i]];
+            xx=i;
+        }
+    }
+    
+    spfa1(aa[xx],xx);
+    for(int tmp=bb[xx];tmp;tmp=fa[tmp].dian)
+    {
+        int temp=fa[tmp].bian;
+        int lo=e[temp].w;
+        
+        int maxnn=-1;
+        for(int j=1;j<=m;j++)
+        {
+            if(fv[j][temp])   //第j个查询跑的路中存在更改的边，直接求，不需要spfa 
+            { 
+                maxnn=max(maxnn,llo[j]-lo);
+            }
+            else maxnn=max(maxnn,llo[j]);  //不然就是自己本身的路径长度 
+        }
+        ans=min(ans,maxnn);
+    }
+    printf("%d",ans);
+    
+    return 0;
+} 
+
+
+
+
+//80
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<algorithm>
+using namespace std;
+int n,m;
+int g[1000010],tot;
+int gg[1000010],tott;
+struct lu
+{
+    int to;
+    int next;
+    int w;
+    int id;
+}e[1000010],ee[1000010];
+struct ffa
+{
+    int dian;
+    int bian;
+}fa[1000010];
+void add1(int a,int b,int c)
+{
+    tot++;
+    e[tot].to=b;
+    e[tot].next=g[a];
+    e[tot].w=c;
+    g[a]=tot;
+}
+void add2(int a,int b,int c)
+{
+    tott++;
+    ee[tott].to=b;
+    ee[tott].next=gg[a];
+    ee[tott].id=c;
+    gg[a]=tott;
+}
+int aa[1000010],bb[1000010];
+int v[1000010],vis[1000010];
+int pre[1000010];
+int find1(int x)
+{
+    if(pre[x]==x)return x;
+    else return pre[x]=find1(pre[x]);
+}
+int lcaa[1000010];
+void lca(int a)
+{
+    v[a]=1;
+    int tmp=g[a];
+    while(tmp!=0)
+    {
+        if(v[e[tmp].to]==0)
+        {
+            lca(e[tmp].to);
+            pre[e[tmp].to]=a;
+        }
+        tmp=e[tmp].next;
+    }
+    vis[a]=1;
+    int temp=gg[a];
+    while(temp!=0)
+    {
+        if(vis[ee[temp].to]==1)
+        {
+            lcaa[ee[temp].id]=find1(ee[temp].to);
+        }
+        temp=ee[temp].next;
+    }
+}
+int ans=99999999;
+int dis[1000010],p[1000010];
+bool f[1000010];
+void spfa()
+{
+    memset(dis,0x3f,sizeof(dis));
+    memset(f,false,sizeof(f));
+    dis[1]=0;
+    int h=0,t=1;
+    p[t]=1;
+    f[1]=true;
+    while(h!=t)
+    {
+        h=h%n+1;
+        int u=p[h];
+        int tmp=g[u];
+        while(tmp!=0)
+        {
+            if(dis[e[tmp].to]>dis[u]+e[tmp].w)
+            {
+                dis[e[tmp].to]=dis[u]+e[tmp].w;
+                if(!f[e[tmp].to])
+                {
+                    t=t%n+1;
+                    p[t]=e[tmp].to;
+                    f[e[tmp].to]=true;
+                }
+            }
+            tmp=e[tmp].next;
+        }
+        f[u]=false;
+    }
+}
+void spfa1(int s)
+{
+    memset(dis,0x3f,sizeof(dis));
+    memset(f,false,sizeof(f));
+    fa[s].dian=0;
+    fa[s].bian=0;
+    dis[s]=0;
+    int h=0,t=1;
+    p[t]=s;
+    f[s]=true;
+    while(h!=t)
+    {
+        h=h%n+1;
+        int u=p[h];
+        int tmp=g[u];
+        while(tmp!=0)
+        {
+            if(dis[e[tmp].to]>dis[u]+e[tmp].w)
+            {
+                dis[e[tmp].to]=dis[u]+e[tmp].w;
+                fa[e[tmp].to].dian=u;
+                fa[e[tmp].to].bian=tmp;
+                if(!f[e[tmp].to])
+                {
+                    t=t%n+1;
+                    p[t]=e[tmp].to;
+                    f[e[tmp].to]=true;
+                }
+            }
+            tmp=e[tmp].next;
+        }
+        f[u]=false;
+    }
+}
+int mm;
+int maxnn=-1;
+int is_;
+int mmaa[1000010];
+int zuo,you;
+int main()
+{
+    scanf("%d %d",&n,&m);
+
+    for(int i=1;i<=n-1;i++)
+    {
+        int x,y,z;
+        scanf("%d %d %d",&x,&y,&z);
+        if((x==i&&y==i+1)||(x==i+1&&y==i))is_++;
+        mmaa[i+1]=mmaa[i]+z;
+        add1(x,y,z);
+        add1(y,x,z);
+    }
+    
+    if(m==1)      //m==1时 
+    {
+        int x,y;
+        scanf("%d %d",&x,&y);
+        spfa1(x);
+        for(int tmp=y;tmp;tmp=fa[tmp].dian)
+        {
+            int temp=fa[tmp].bian;
+            maxnn=max(maxnn,e[temp].w);
+        }
+        printf("%d",dis[y]-maxnn);
+        return 0;
+    }
+    
+    if(is_==n-1)     //一条链时 
+    {
+        int mmax=-1;
+    	for(int i=1;i<=m;i++)
+        {
+        	scanf("%d %d",&aa[i],&bb[i]);
+        	int ssum=mmaa[bb[i]]-mmaa[aa[i]];
+        	if(mmax<ssum)
+        	{
+        		mmax=ssum;
+        		zuo=aa[i];   //找到最长的一段 
+        		you=bb[i];
+        	}
+        }
+        
+        for(int i=zuo;i<you;i++)
+        {
+            int ssum=e[i*2].w;
+            maxnn=-1;
+            for(int j=1;j<=m;j++)
+            {
+                if(aa[j]<=i&&bb[j]>i)   //更改的线段在第j个查询的最短路上 
+                {
+                    maxnn=max(maxnn,mmaa[bb[j]]-mmaa[aa[j]]-ssum);
+                }
+                else maxnn=max(maxnn,mmaa[bb[j]]-mmaa[aa[j]]);
+            }
+            ans=min(ans,maxnn);
+        }
+        printf("%d",ans);
+        return 0;
+    }
+    
+    for(int i=1;i<=m;i++)
+    {
+        scanf("%d %d",&aa[i],&bb[i]);
+        add2(aa[i],bb[i],i);
+        add2(bb[i],aa[i],i);
+    }	
+    
+    for(int i=1;i<=n;i++)pre[i]=i;
+    lca(1);
+    spfa();
+    for(int i=1;i<=m;i++)
+    {
+        int t=dis[aa[i]]+dis[bb[i]]-2*dis[lcaa[i]];
+        if(t>maxnn)
+        {
+            maxnn=t;
+            mm=i;
+        }
+    }
+    
+    spfa1(aa[mm]);
+    for(int tmp=bb[mm];tmp;tmp=fa[tmp].dian)
+    {
+        int temp=fa[tmp].bian;
+        
+        int lo=e[temp].w;
+        e[temp].w=0;
+        if(temp%2==0)e[temp-1].w=0;
+        else e[temp+1].w=0;
+        
+        spfa();
+        
+        e[temp].w=lo;
+        if(temp%2==0)e[temp-1].w=lo;
+        else e[temp+1].w=lo;
+        
+        maxnn=-1;
+        for(int j=1;j<=m;j++)
+        {
+            maxnn=max(maxnn,dis[aa[j]]+dis[bb[j]]-2*dis[lcaa[j]]);
+        }
+        ans=min(ans,maxnn);
+        
+    }
+    printf("%d",ans);
+    return 0;
+}
+
