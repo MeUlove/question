@@ -1,0 +1,136 @@
+//线段树
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<algorithm>
+using namespace std;
+int n,m;
+int r[1000010],d[1000010],s[1000010],t[1000010];
+struct shu
+{
+	int l,r,minn;
+	int lazy;
+}e[2000010];
+void buildshu(int ll,int rr,int o)
+{
+	e[o].l=ll;
+	e[o].r=rr;
+	e[o].lazy=0;
+	int oo=o*2;
+	if(ll==rr)
+	{
+		e[o].minn=r[ll];
+		return;
+	}
+	int mid=(ll+rr)/2;
+	buildshu(ll,mid,oo);
+	buildshu(mid+1,rr,oo+1);
+	e[o].minn=min(e[oo].minn,e[oo+1].minn);
+	return;
+}
+
+void changee(int ll,int rr,int w,int o)
+{
+    int oo=o*2;
+	if(e[o].l==ll&&e[o].r==rr)
+	{
+		e[o].minn-=w;     //修改后，下放lazy 
+		if(e[o].l!=e[o].r)
+		{
+			e[oo].lazy+=w;
+			e[oo+1].lazy+=w;
+		}
+		return;
+	}	
+  /*if(e[o].l==ll&&e[o].r==rr)
+	{
+		e[o].lazy+=w;   //lazy不下放 
+		return;
+	}	*/
+	int mid=(e[o].l+e[o].r)/2;
+	if(rr<=mid)changee(ll,rr,w,oo);
+	if(ll>mid)changee(ll,rr,w,oo+1);
+	if(ll<=mid&&rr>mid)
+	{
+		changee(ll,mid,w,oo);
+		changee(mid+1,rr,w,oo+1);
+	}
+	e[o].minn=min(e[oo].minn-e[oo].lazy,e[oo+1].minn-e[oo+1].lazy);
+	//求最小值是lazy会不断下放，
+	//但在修改过程中求最小值时，lazy并不下放，求最小值的时候要减去lazy 
+}
+
+int main()
+{
+	scanf("%d %d",&n,&m);
+	for(int i=1;i<=n;i++)scanf("%d",&r[i]);
+	for(int i=1;i<=m;i++)
+	{
+		scanf("%d %d %d",&d[i],&s[i],&t[i]);
+	}
+	buildshu(1,n,1);
+	for(int i=1;i<=m;i++)
+	{
+		changee(s[i],t[i],d[i],1);
+		
+		if(e[1].minn-e[1].lazy<0)
+		{
+			printf("-1\n%d",i);
+			return 0;
+		}
+	}
+	printf("0");
+	return 0;
+}
+
+
+
+
+//二分
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<algorithm>
+using namespace std;
+int n,m;
+int r[1000010],cha[1000010],d[1000010],s[1000010],t[1000010];
+int l,rr;
+bool check(int x)
+{
+	memset(cha,0,sizeof(cha));
+	for(int i=1;i<=x;i++)
+	{
+		cha[s[i]]+=d[i];
+		cha[t[i]+1]-=d[i];
+	}
+	int sum=0;
+	for(int i=1;i<=n;i++)
+	{
+		sum+=cha[i];
+		if(r[i]-sum<0)return true;
+	}
+	return false;
+}
+int main()
+{
+	scanf("%d %d",&n,&m);
+	for(int i=1;i<=n;i++)scanf("%d",&r[i]);
+	for(int i=1;i<=m;i++)
+	{
+		scanf("%d %d %d",&d[i],&s[i],&t[i]);
+	}
+	l=1;
+	rr=m;
+	while(l+1<rr)
+	{
+		int mid=(l+rr)/2;
+		if(check(mid))rr=mid;
+		else l=mid+1;
+	}
+	if(check(l))printf("-1\n%d",l);
+	else if(check(rr))printf("-1\n%d",rr);
+	else printf("0");
+	return 0;
+}
