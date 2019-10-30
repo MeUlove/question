@@ -1,0 +1,181 @@
+//30
+#include<iostream>
+#include<cstdio>
+#include<cmath>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+int n,m,q;
+int g[1000010],tot;
+struct tu
+{
+    int to;
+    int next;
+    int w;
+}e[1000010];
+void addedge(int a,int b,int c)
+{
+    tot++;
+    e[tot].to=b;
+    e[tot].next=g[a];
+    e[tot].w=c;
+    g[a]=tot;
+}
+int dis[1000010],p[1000010];
+bool f[1000010];
+void spfa(int s)
+{
+    memset(dis,-1,sizeof(dis));
+    memset(f,false,sizeof(f));
+    dis[s]=0x3f3f3f3f;
+    int h=0,t=1;
+    p[t]=s;
+    f[s]=true;
+    while(h!=t)
+    {
+        h=h%n+1;
+        int u=p[h];
+        int tmp=g[u];
+        while(tmp!=0)
+        {
+            if(dis[e[tmp].to]<min(dis[u],e[tmp].w))
+            {
+                dis[e[tmp].to]=min(dis[u],e[tmp].w);
+                if(!f[e[tmp].to])
+                {
+                    t=t%n+1;
+                    p[t]=e[tmp].to;
+                    f[e[tmp].to]=true;
+                }
+            }
+            tmp=e[tmp].next;
+        }
+        f[u]=false;
+    }
+}
+int main()
+{
+    scanf("%d %d",&n,&m);
+    for(int i=1;i<=m;i++)
+    {
+        int x,y,z;
+        scanf("%d %d %d",&x,&y,&z);
+        addedge(x,y,z);
+        addedge(y,x,z);
+    }
+    scanf("%d",&q);
+    for(int i=1;i<=q;i++)
+    {
+        int x,y;
+        scanf("%d %d",&x,&y);
+        spfa(x);
+        printf("%d\n",dis[y]);
+    }
+    return 0;
+}
+
+
+
+//60
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<algorithm>
+using namespace std;
+int n,m,q;
+int g[1000010],tot;
+struct tu
+{
+    int to;
+    int next;
+    int w;
+}e[1000010];
+struct lu
+{
+    int aa;
+    int bb;
+    int w;
+}ee[1000010];
+int cmp(lu a,lu b)
+{
+    return a.w>b.w;
+}
+int pre[1000010];
+int find1(int x)
+{
+    if(pre[x]==x)return x;
+    else return pre[x]=find1(pre[x]);
+}
+void addedge(int a,int b,int c)
+{
+    tot++;
+    e[tot].to=b;
+    e[tot].next=g[a];
+    e[tot].w=c;
+    g[a]=tot;
+}
+int dis[1000010],p[1000100];
+bool f[1000010];
+void spfa(int s)
+{
+    dis[s]=0x3f3f3f3f;
+    int h=0,t=1;
+    p[t]=s;
+    f[s]=true;
+    while(h!=t)
+    {
+        h=h%n+1;
+        int u=p[h];
+        int tmp=g[u];
+        while(tmp!=0)
+        {
+            if(dis[e[tmp].to]<min(dis[u],e[tmp].w))
+            {
+                dis[e[tmp].to]=min(dis[u],e[tmp].w);
+                if(!f[e[tmp].to])
+                {
+                    t=t%n+1;
+                    f[e[tmp].to]=true;
+                    p[t]=e[tmp].to;
+                }
+            }
+            tmp=e[tmp].next;
+        }
+        f[u]=false;
+    }
+}
+int main()
+{
+    scanf("%d %d",&n,&m);
+    for(int i=1;i<=n;i++)pre[i]=i;
+    for(int i=1;i<=m;i++)scanf("%d %d %d",&ee[i].aa,&ee[i].bb,&ee[i].w);
+    sort(ee+1,ee+1+m,cmp);
+    for(int i=1;i<=m;i++)
+    {
+        int a=find1(ee[i].aa),b=find1(ee[i].bb);
+        if(a!=b)
+        {
+            pre[a]=b;
+            addedge(ee[i].aa,ee[i].bb,ee[i].w);
+            addedge(ee[i].bb,ee[i].aa,ee[i].w);
+        }
+    }
+    
+    scanf("%d",&q);
+    for(int i=1;i<=q;i++)
+    {
+        int x,y;
+        scanf("%d %d",&x,&y);
+        if(find1(x)!=find1(y))
+        {
+            printf("-1\n");
+            continue;
+        }
+        memset(dis,-1,sizeof(dis));
+        memset(f,false,sizeof(f));
+        spfa(x);
+        printf("%d\n",dis[y]);
+    }
+    return 0;
+}
